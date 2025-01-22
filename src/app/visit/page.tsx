@@ -19,31 +19,41 @@ export default function VisitingPage() {
       {/* Visit Options Section */}
       <section className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">Campus Tours</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Join a guided tour of our campus and see our classrooms, labs, and more.
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">Visit Schedules</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Choose a date and time that works best for you and plan your visit accordingly.
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">Open Houses</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Attend an open house event to meet faculty, students, and explore our campus.
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">Virtual Opportunities</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Explore Greenfield University from the comfort of your home through virtual tours and
-              webinars.
-            </p>
-          </div>
+          <Link href="/visit/campus-tours" className="block">
+            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
+              <h3 className="text-xl font-bold text-emerald-800 mb-4">Campus Tours</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Join a guided tour of our campus and see our classrooms, labs, and more.
+              </p>
+            </div>
+          </Link>
+          
+          <Link href="/visit/schedules" className="block">
+            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
+              <h3 className="text-xl font-bold text-emerald-800 mb-4">Visit Schedules</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Choose a date and time that works best for you and plan your visit accordingly.
+              </p>
+            </div>
+          </Link>
+          
+          <Link href="/visit/open-houses" className="block">
+            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
+              <h3 className="text-xl font-bold text-emerald-800 mb-4">Open Houses</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Attend an open house event to meet faculty, students, and explore our campus.
+              </p>
+            </div>
+          </Link>
+          
+          <Link href="/visit/virtual" className="block">
+            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
+              <h3 className="text-xl font-bold text-emerald-800 mb-4">Virtual Opportunities</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Explore Greenfield University from the comfort of your home through virtual tours and webinars.
+              </p>
+            </div>
+          </Link>
         </div>
       </section>
 
@@ -58,7 +68,7 @@ export default function VisitingPage() {
               find a date and time that works best for you.
             </p>
             <Link
-              href="/visit-schedules"
+              href="/visit/schedules"
               className="text-emerald-700 hover:text-emerald-800 font-bold transition-colors"
             >
               View Visit Schedules →

@@ -1,5 +1,6 @@
 import React from "react";
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function LandingPage() {
   return (
@@ -36,22 +37,46 @@ export default function LandingPage() {
       </section>
 
       {/* Campus Highlights Section */}
-      <section className="container mx-auto px-6 py-12 bg-white">
+      <section className="container mx-auto px-6 py-12">
         <h2 className="text-3xl font-bold mb-8 text-emerald-900 text-center">Campus Highlights</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <Image
+                src="/images/campus/library.jpg"
+                alt="Greenfield Library"
+                fill
+                className="object-cover"
+              />
+            </div>
             <h3 className="text-xl font-bold text-emerald-800 mb-4">Greenfield Library</h3>
             <p className="text-gray-600 leading-relaxed">
               A state-of-the-art research facility with over 1 million books and digital resources.
             </p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <Image
+                src="/images/campus/innovation.jpg"
+                alt="Innovation Center"
+                fill
+                className="object-cover"
+              />
+            </div>
             <h3 className="text-xl font-bold text-emerald-800 mb-4">Innovation Center</h3>
             <p className="text-gray-600 leading-relaxed">
               A hub for startups and entrepreneurship, helping students bring their ideas to life.
             </p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <Image
+                src="/images/campus/arts.jpg"
+                alt="Performing Arts Center"
+                fill
+                className="object-cover"
+              />
+            </div>
             <h3 className="text-xl font-bold text-emerald-800 mb-4">Greenfield Performing Arts Center</h3>
             <p className="text-gray-600 leading-relaxed">
               Hosting theater productions, concerts, and guest speakers throughout the year.
@@ -61,26 +86,68 @@ export default function LandingPage() {
       </section>
 
       {/* News Section */}
-      <section className="container mx-auto px-6 py-12 bg-gradient-to-b from-white to-emerald-50">
+      <section className="container mx-auto px-6 py-12">
         <h2 className="text-3xl font-bold mb-8 text-emerald-900 text-center">Latest News</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">Spring 2025 Enrollment</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Enroll now for the upcoming semester. Deadline: March 1.
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <Image
+                src="/images/news/enrollment.jpg"
+                alt="Application Process"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <h3 className="text-xl font-bold text-emerald-800 mb-4">Apply Now</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              Start your journey at Greenfield University. Applications open for Fall 2025.
             </p>
+            <Link 
+              href="/apply/undergraduate"
+              className="text-emerald-600 font-bold hover:underline"
+            >
+              Learn More →
+            </Link>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">Campus Expansion Plans</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Exciting new spaces are coming to Greenfield University in 2026.
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <Image
+                src="/images/open-houses/campus.jpg"
+                alt="Campus Visit"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <h3 className="text-xl font-bold text-emerald-800 mb-4">Visit Campus</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              Experience our campus in person or through virtual tours.
             </p>
+            <Link 
+              href="/visit/open-houses"
+              className="text-emerald-600 font-bold hover:underline"
+            >
+              Schedule a Visit →
+            </Link>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-600">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">Alumni Spotlight</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Learn about the incredible achievements of our graduates.
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <Image
+                src="/images/virtual/webinar.jpg"
+                alt="Virtual Tour"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <h3 className="text-xl font-bold text-emerald-800 mb-4">Virtual Tours</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              Can&apos;t visit in person? Take a virtual tour of our campus.
             </p>
+            <Link 
+              href="/visit/virtual"
+              className="text-emerald-600 font-bold hover:underline"
+            >
+              Take the Tour →
+            </Link>
           </div>
         </div>
       </section>
