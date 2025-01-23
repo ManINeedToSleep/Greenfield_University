@@ -1,66 +1,43 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import bcrypt from 'bcryptjs';
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/db'
+import bcrypt from 'bcryptjs'
 
 export async function POST(request: Request) {
   try {
-    const { email, password, role } = await request.json();
+    const { email, password, role } = await request.json()
 
-    if (!email || !password || !role) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
+    // Find user
     const user = await prisma.user.findUnique({
       where: { email },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        name: true,
-        password: true
-      }
-    });
+    })
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    if (user.role !== role) {
-      return NextResponse.json(
-        { error: 'Invalid role' },
-        { status: 403 }
-      );
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
+    if (!user || user.role !== role) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
-      );
+      )
     }
 
-    // Create a new object without the password
-    const safeUser = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name
-    };
+    // Verify password (assuming passwords are hashed)
+    const isValid = await bcrypt.compare(password, user.password)
 
-    return NextResponse.json(safeUser);
+    if (!isValid) {
+      return NextResponse.json(
+        { error: 'Invalid credentials' },
+        { status: 401 }
+      )
+    }
+
+    // Return user data (exclude password)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: userPassword, ...userData } = user
+    return NextResponse.json(userData)
 
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Login error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    );
+    )
   }
-}
+} 
