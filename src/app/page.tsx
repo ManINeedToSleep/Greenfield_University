@@ -1,7 +1,60 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Image from 'next/image';
+import { motion } from "framer-motion";
 
 export default function LandingPage() {
+  const [showAnimation, setShowAnimation] = useState(true);
+  const letters = ["G", "U"];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAnimation(false);
+    }, 3000); // Increased duration to 3s for smoother animation
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const letterVariants = {
+    initial: (index: number) => ({
+      x: index === 0 ? "-100vw" : "100vw",
+      opacity: 0,
+    }),
+    animate: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 1, ease: "easeOut" },
+    },
+    exit: (index: number) => ({
+      x: index === 0 ? "-100vw" : "100vw",
+      opacity: 0,
+      transition: { duration: 1, ease: "easeIn" },
+    }),
+  };
+
+  if (showAnimation) {
+    return (
+      <div className="fixed inset-0 flex justify-center items-center bg-emerald-50">
+        <div className="flex w-full justify-center items-center">
+          {letters.map((letter, index) => (
+            <motion.div
+              key={index}
+              custom={index}
+              variants={letterVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="text-[20vw] font-bold text-emerald-900"
+            >
+              {letter}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Introduction Section */}
