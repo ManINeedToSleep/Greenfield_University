@@ -1,64 +1,76 @@
-import React from "react";
-import Link from "next/link";
+"use client";
 
-export default function PortalPage() {
+import React from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+
+export default function RoleSelection() {
+  const router = useRouter();
+
+  const roles = [
+    {
+      title: "Student",
+      description: "Access your classes, grades, schedule, and learning resources.",
+      icon: "/images/icons/student-logo.png",
+      path: "student"
+    },
+    {
+      title: "Faculty",
+      description: "Manage your courses, grades, and communicate with students.",
+      icon: "/images/icons/teacher-logo.png",
+      path: "faculty"
+    },
+    {
+      title: "Admin",
+      description: "Oversee university operations and manage system settings.",
+      icon: "/images/icons/admin-logo.png",
+      path: "admin"
+    }
+  ];
+
+  const handleRoleSelection = (path: string) => {
+    router.push(`/portal/${path}/login`);
+  };
+
   return (
-    <div>
-      {/* Login Section */}
-      <section className="container mx-auto px-6 py-12">
-        <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md">
-          <h1 className="text-3xl font-bold text-emerald-900 mb-6 text-center">GU Portal Login</h1>
-          <form className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                placeholder="username@greenfield.edu"
-              />
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-4/5 md:w-3/5 bg-white shadow-xl rounded-xl p-8">
+        <h1 className="text-4xl font-bold text-emerald-900 text-center mb-8">
+          Welcome to GU Portal
+        </h1>
+        <p className="text-gray-600 text-center mb-12">
+          Please select your role to continue
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {roles.map((role, index) => (
+            <div
+              key={index}
+              onClick={() => handleRoleSelection(role.path)}
+              className="p-6 bg-gradient-to-b from-emerald-50 to-emerald-100 rounded-xl shadow-md 
+                hover:shadow-lg hover:scale-105 cursor-pointer transition-all duration-300
+                border-2 border-emerald-200"
+            >
+              <div className="flex flex-col items-center">
+                <div className="w-20 h-20 relative mb-4">
+                  <Image
+                    src={role.icon}
+                    alt={role.title}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <h2 className="text-xl font-bold text-emerald-800 text-center mb-3">
+                  {role.title}
+                </h2>
+                <p className="text-gray-600 text-center text-sm">
+                  {role.description}
+                </p>
+              </div>
             </div>
-            <div>
-              <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                placeholder="Enter your password"
-              />
-            </div>
-            <div className="flex justify-between items-center">
-              <Link 
-                href="/portal/reset-password" 
-                className="text-emerald-600 hover:text-emerald-700 transition-colors"
-              >
-                Forgot Password?
-              </Link>
-              <button
-                type="submit"
-                className="bg-emerald-600 text-white px-6 py-2 rounded-md hover:bg-emerald-700 transition-colors"
-              >
-                Login
-              </button>
-            </div>
-          </form>
-          <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              Need help? Contact{" "}
-              <Link 
-                href="/contact" 
-                className="text-emerald-600 hover:text-emerald-700 transition-colors"
-              >
-                IT Support
-              </Link>
-            </p>
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
     </div>
   );
 } 
