@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 interface LoginFormProps {
   role: string;
@@ -8,17 +10,47 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ role, additionalFields }: LoginFormProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    roleId: "", // For student/faculty/admin ID
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Add authentication logic here
-    console.log(`${role} login attempt:`, formData);
-    // After successful login, redirect to dashboard
-    // router.push(`/portal/${role}/dashboard`);
+    setIsLoading(true);
+    setFormError(null);
+
+    try {
+      // Get the roleId from the appropriate field
+      const roleIdField = document.getElementById(
+        role.toLowerCase() + 'Id'
+      ) as HTMLInputElement;
+      
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        role: role,
+        roleId: roleIdField?.value || '',
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setFormError("Invalid credentials");
+        return;
+      }
+
+      // Redirect to role-specific dashboard
+      router.push(`/portal/${role}/dashboard`);
+      router.refresh();
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +67,12 @@ export default function LoginForm({ role, additionalFields }: LoginFormProps) {
           {role.charAt(0).toUpperCase() + role.slice(1)} Login
         </h2>
         
+        {formError && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+            {formError}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
@@ -68,6 +106,13 @@ export default function LoginForm({ role, additionalFields }: LoginFormProps) {
             />
           </div>
 
+          <input
+            type="hidden"
+            name="roleId"
+            value={formData.roleId}
+            onChange={handleChange}
+          />
+
           {/* Additional fields specific to role */}
           {additionalFields}
 
@@ -83,9 +128,10 @@ export default function LoginForm({ role, additionalFields }: LoginFormProps) {
 
           <button
             type="submit"
-            className="w-full bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 transition-colors duration-300"
+            disabled={isLoading}
+            className="w-full bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 transition-colors duration-300 disabled:opacity-50"
           >
-            Sign In
+            {isLoading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
