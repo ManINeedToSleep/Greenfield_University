@@ -1,3 +1,11 @@
+interface Student {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  studentId: string;
+}
+
 export interface Course {
   id: string;
   name: string;
@@ -7,6 +15,13 @@ export interface Course {
   credits: number;
   capacity: number;
   isActive: boolean;
+  description?: string;
+  instructor: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  students?: Student[];
 }
 
 export interface FilterOptions {

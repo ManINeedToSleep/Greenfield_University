@@ -1,6 +1,24 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { Role } from '@prisma/client';
+
+function generateRoleId(role: Role, firstName: string, lastName: string) {
+  const year = new Date().getFullYear().toString().slice(-2);
+  const initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  
+  switch (role) {
+    case 'STUDENT':
+      return `ST${year}${random}`;
+    case 'FACULTY':
+      return `FC${initials}${random}`;
+    case 'ADMIN':
+      return `AD${initials}${random}`;
+    default:
+      return random;
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -17,28 +35,39 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(body.password, 10);
     
-    const userData = {
-      email: body.email,
-      password: hashedPassword,
-      firstName: body.firstName,
-      lastName: body.lastName,
-      role: body.role,
-      isActive: true,
-      studentId: body.role === 'STUDENT' ? body.studentId : null,
-      facultyId: body.role === 'FACULTY' ? body.facultyId : null,
-      adminId: body.role === 'ADMIN' ? body.adminId : null,
-    };
-
-    console.log('Creating user with data:', { ...userData, password: '[HIDDEN]' });
-
+    // Generate role-specific ID
+    const roleId = generateRoleId(body.role, body.firstName, body.lastName);
+    
+    // Create user with role-specific ID
     const newUser = await prisma.user.create({
-      data: userData
+      data: {
+        email: body.email,
+        password: hashedPassword,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        role: body.role,
+        ...(body.role === 'STUDENT' && { studentId: roleId }),
+        ...(body.role === 'FACULTY' && { facultyId: roleId }),
+        ...(body.role === 'ADMIN' && { adminId: roleId }),
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        studentId: true,
+        facultyId: true,
+        adminId: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     console.log('User created successfully:', { id: newUser.id, email: newUser.email });
 
-    const { password: _password, ...userWithoutPassword } = newUser;
-    return NextResponse.json(userWithoutPassword);
+    return NextResponse.json(newUser);
   } catch (error) {
     console.error('Error creating user:', error);
     

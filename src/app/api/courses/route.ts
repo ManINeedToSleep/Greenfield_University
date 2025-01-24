@@ -5,13 +5,30 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     
+    // Validate required fields
+    if (!body.name || !body.code || !body.faculty) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
     const newCourse = await prisma.course.create({
       data: {
         name: body.name,
         code: body.code,
-        description: body.description,
-        instructor: { connect: { id: body.faculty } },
+        description: body.description || '',
         instructorId: body.faculty,
+      },
+      include: {
+        instructor: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true
+          }
+        }
       }
     });
 

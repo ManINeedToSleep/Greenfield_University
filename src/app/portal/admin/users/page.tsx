@@ -208,16 +208,20 @@ export default function UserManagement() {
   };
 
   const handleDelete = async (userId: string) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      try {
-        const response = await fetch(`/api/users/${userId}`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) throw new Error('Failed to delete user');
-        setUsers(users.filter(user => user.id !== userId));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to delete user');
+    try {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete user');
       }
+
+      // Remove user from state
+      setUsers(users.filter(user => user.id !== userId));
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      // Handle error (maybe show a toast notification)
     }
   };
 

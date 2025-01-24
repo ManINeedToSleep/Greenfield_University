@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const facultyMembers = await prisma.user.findMany({
+    const faculty = await prisma.user.findMany({
       where: {
         role: 'FACULTY',
         isActive: true
@@ -13,21 +13,11 @@ export async function GET() {
         firstName: true,
         lastName: true,
         email: true,
-        facultyId: true,
-        teaching: {
-          select: {
-            id: true,
-            name: true,
-            code: true
-          }
-        }
-      },
-      orderBy: {
-        firstName: 'asc'
+        facultyId: true
       }
     });
-
-    return NextResponse.json(facultyMembers);
+    
+    return NextResponse.json(faculty);
   } catch (error) {
     console.error('Failed to fetch faculty:', error);
     return NextResponse.json(

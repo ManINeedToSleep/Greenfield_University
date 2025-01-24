@@ -41,3 +41,34 @@ export async function GET(
     );
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const id = (await params).id;
+    
+    const deletedUser = await prisma.user.delete({
+      where: { id },
+    });
+
+    if (!deletedUser) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: 'User deleted successfully' },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Failed to delete user:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete user' },
+      { status: 500 }
+    );
+  }
+}

@@ -80,29 +80,34 @@ export default function CourseManagement() {
     }
   }, []);
 
-  const saveCourse = useCallback(async (courseData: Course | Omit<Course, 'id'>) => {
-    if (!('id' in courseData)) return;  // Handle new course case
-    
+  const handleSave = async (courseData: Partial<Course>) => {
     try {
+      console.log('Saving course data:', courseData); // Debug log
+
       const response = await fetch(`/api/courses/${courseData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(courseData),
       });
 
-      if (!response.ok) throw new Error('Failed to update course');
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server error:', errorData); // Debug log
+        throw new Error(errorData.error || 'Failed to update course');
+      }
+
       const updatedCourse = await response.json();
-      setCourses(prevCourses => 
-        prevCourses.map(course => 
-          course.id === updatedCourse.id ? updatedCourse : course
-        )
-      );
-      setIsEditModalOpen(false);
-      setEditingCourse(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update course');
+      setCourses(courses.map(course => 
+        course.id === updatedCourse.id ? updatedCourse : course
+      ));
+      setIsEditModalOpen(false); // Close modal after successful update
+    } catch (error) {
+      console.error('Error updating course:', error);
+      // You might want to show an error message to the user here
     }
-  }, []);
+  };
 
   return (
     <div className="bg-emerald-50 min-h-screen">
@@ -151,8 +156,8 @@ export default function CourseManagement() {
                 <tr>
                   <th className="px-6 py-4 text-left text-slate-800">Course Name</th>
                   <th className="px-6 py-4 text-left text-slate-800">Code</th>
-                  <th className="px-6 py-4 text-left text-slate-800">Faculty</th>
-                  <th className="px-6 py-4 text-left text-slate-800">Department</th>
+                  <th className="px-6 py-4 text-left text-slate-800">Instructor</th>
+                  <th className="px-6 py-4 text-left text-slate-800">Students</th>
                   <th className="px-6 py-4 text-left text-slate-800">Status</th>
                   <th className="px-6 py-4 text-left text-slate-800">Actions</th>
                 </tr>
@@ -162,8 +167,12 @@ export default function CourseManagement() {
                   <tr key={course.id} className="border-t border-emerald-100 hover:bg-emerald-50">
                     <td className="px-6 py-4 text-slate-800">{course.name}</td>
                     <td className="px-6 py-4 text-slate-800">{course.code}</td>
-                    <td className="px-6 py-4 text-slate-800">{course.faculty}</td>
-                    <td className="px-6 py-4 text-slate-800">{course.department}</td>
+                    <td className="px-6 py-4 text-slate-800">
+                      {course.instructor.firstName} {course.instructor.lastName}
+                    </td>
+                    <td className="px-6 py-4 text-slate-800">
+                      {course.students?.length || 0} students
+                    </td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-full text-sm ${
                         course.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
@@ -208,7 +217,7 @@ export default function CourseManagement() {
       {isEditModalOpen && editingCourse && (
         <CourseModal
           onClose={() => setIsEditModalOpen(false)}
-          onSave={saveCourse}
+          onSave={handleSave}
           course={editingCourse}
         />
       )}
@@ -221,26 +230,30 @@ export default function CourseManagement() {
 
 function CourseModal({ onClose, onSave, course }: CourseModalProps) {
   const [formData, setFormData] = useState({
+    id: course?.id || '',
     name: course?.name || '',
     code: course?.code || '',
-    faculty: course?.faculty || '',
+    faculty: course?.instructor?.id || '',
     department: course?.department || '',
     credits: course?.credits || 3,
     capacity: course?.capacity || 30,
-    isActive: course?.isActive ?? true
+    isActive: course?.isActive ?? true,
+    description: course?.description || ''
   });
   
   const [facultyMembers, setFacultyMembers] = useState<Array<{
     id: string;
-    name: string;
-    department: string;
+    firstName: string;
+    lastName: string;
+    facultyId: string;
+    email: string;
   }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const response = await fetch('/api/users/faculty');
+        const response = await fetch('/api/faculty');
         if (!response.ok) throw new Error('Failed to fetch faculty members');
         const data = await response.json();
         setFacultyMembers(data);
@@ -254,15 +267,29 @@ function CourseModal({ onClose, onSave, course }: CourseModalProps) {
     void fetchFaculty();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    console.log('Submitting form data:', formData); // Debug log
+    
+    try {
+      await onSave({
+        ...formData,
+        instructor: {
+          id: formData.faculty,
+          firstName: '', // These will be populated by the server
+          lastName: ''
+        }
+      });
+      onClose();
+    } catch (error) {
+      console.error('Submit error:', error);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const newValue = type === 'number' ? Number(value) : value;
-    setFormData(prev => ({ ...prev, [name]: newValue }));
+    const { name, value } = e.target;
+    console.log('Field changed:', name, value); // Debug log
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -304,23 +331,24 @@ function CourseModal({ onClose, onSave, course }: CourseModalProps) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Assigned Faculty</label>
-              <select
-                name="faculty"
-                value={formData.faculty}
-                onChange={handleChange}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-slate-800 bg-white"
-                required
-                disabled={loading}
-              >
-                <option value="">
-                  {loading ? 'Loading faculty...' : 'Select Faculty Member'}
-                </option>
-                {facultyMembers.map(faculty => (
-                  <option key={faculty.id} value={faculty.id}>
-                    {faculty.name} - {faculty.department}
-                  </option>
-                ))}
-              </select>
+              {loading ? (
+                <div>Loading faculty members...</div>
+              ) : (
+                <select
+                  name="faculty"
+                  value={formData.faculty}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-black"
+                  required
+                >
+                  <option value="">Select Faculty</option>
+                  {facultyMembers.map((faculty) => (
+                    <option key={faculty.id} value={faculty.id}>
+                      {faculty.firstName} {faculty.lastName} ({faculty.facultyId})
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div>
@@ -354,12 +382,15 @@ function CourseModal({ onClose, onSave, course }: CourseModalProps) {
           <div className="flex items-center gap-2 pt-2">
             <input
               type="checkbox"
+              id="isActive"
               name="isActive"
               checked={formData.isActive}
-              onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+              onChange={handleChange}
               className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
             />
-            <label className="text-sm font-medium text-slate-700">Active Course</label>
+            <label htmlFor="isActive" className="text-sm font-medium text-slate-700">
+              Active Course
+            </label>
           </div>
         </div>
 
