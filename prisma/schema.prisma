@@ -1,5 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file for a School Management System
+// The system handles users (students, faculty, admin), courses, assignments,
+// grades, schedules, and a calendar system.
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
@@ -13,45 +14,180 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User Model: Represents all users in the system (students, faculty, and administrators)
+// The roleId is automatically generated following the pattern:
+// - First two letters of role (ST/FA/AD)
+// - First initial of firstName
+// - First initial of lastName
+// - Year of creation
+// Example: ADJD2024 for Admin John Doe created in 2024
 model User {
   id        String   @id @default(cuid())
+  roleId    String   @unique 
   email     String   @unique
   password  String
   role      Role     @default(STUDENT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Role-specific fields
-  studentId String?  @unique
-  facultyId String?  @unique
-  adminId   String?  @unique
-
-  // Common fields
+  // Basic user information
   firstName String
   lastName  String
   isActive  Boolean  @default(true)
 
-  // Relations based on role
-  courses    Course[]    @relation("Enrollment")
-  teaching   Course[]    @relation("Teaching")
+  // Relationships
+  enrolledCourses Course[]    @relation("Enrollment")    // Courses student is enrolled in
+  teachingCourses Course[]    @relation("Teaching")      // Courses faculty is teaching
+  submissions     Submission[]                           // Student's assignment submissions
+  announcements   Announcement[]                         // Announcements created by faculty
+  grades          Grade[]     @relation("GradedBy")      // Grades given by faculty
+  receivedGrades  Grade[]     @relation("GradedFor")     // Grades received by student
+  calendar        Calendar    @relation(fields: [calendarId], references: [id])
+  calendarId      String      @unique
+  events          Event[]                                // Events created by the user
 }
 
+// Course Model: Represents a class or subject
 model Course {
   id          String   @id @default(cuid())
-  code        String   @unique
-  name        String
+  code        String   @unique                          // Unique course code (e.g., "MATH101")
+  name        String                                    // Course name
   description String?
+  schedule    Schedule[]                               // Weekly schedule for the course
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relations
-  students    User[]   @relation("Enrollment")
-  instructor  User     @relation("Teaching", fields: [instructorId], references: [id])
-  instructorId String
+  // Relationships
+  students      User[]        @relation("Enrollment")   // Enrolled students
+  instructor    User          @relation("Teaching", fields: [instructorId], references: [id])
+  instructorId  String
+  assignments   Assignment[]                            // Course assignments
+  announcements Announcement[]                          // Course announcements
 }
 
+// Schedule Model: Handles course timing and room allocation
+model Schedule {
+  id        String     @id @default(cuid())
+  dayOfWeek DayOfWeek                                  // Day of the week for the class
+  startTime DateTime                                   // Class start time
+  endTime   DateTime                                   // Class end time
+  room      String                                     // Classroom/location
+
+  // Relationships
+  course    Course     @relation(fields: [courseId], references: [id])
+  courseId  String
+}
+
+// Assignment Model: Represents homework, projects, or tests
+model Assignment {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  dueDate     DateTime                                 // Submission deadline
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  maxScore    Float    @default(100)                   // Maximum possible score
+
+  // Relationships
+  course      Course      @relation(fields: [courseId], references: [id])
+  courseId    String
+  submissions Submission[]                             // Student submissions
+}
+
+// Submission Model: Represents a student's submitted work
+model Submission {
+  id          String   @id @default(cuid())
+  content     String                                   // Submitted content/work
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  assignment    Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId  String
+  student       User      @relation(fields: [studentId], references: [id])
+  studentId     String
+  grade         Grade?                                 // Associated grade
+}
+
+// Grade Model: Represents the evaluation of a submission
+model Grade {
+  id          String   @id @default(cuid())
+  score       Float                                    // Numerical score
+  feedback    String?                                  // Teacher's feedback
+  gradedAt    DateTime @default(now())
+
+  // Relationships
+  submission    Submission @relation(fields: [submissionId], references: [id])
+  submissionId  String    @unique
+  gradedBy      User      @relation("GradedBy", fields: [graderId], references: [id])
+  graderId      String                                 // Teacher who graded
+  gradedFor     User      @relation("GradedFor", fields: [studentId], references: [id])
+  studentId     String                                 // Student who received the grade
+}
+
+// Calendar Model: Personal calendar for each user
+model Calendar {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relationships
+  user      User?                                      // Calendar owner
+  events    Event[]                                    // Calendar events
+}
+
+// Event Model: Represents calendar events (system, academic, or personal)
+model Event {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  type        EventType  @default(PERSONAL)            // Type of event (system/academic/personal)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relationships
+  calendar    Calendar   @relation(fields: [calendarId], references: [id])
+  calendarId  String
+  creator     User       @relation(fields: [creatorId], references: [id])
+  creatorId   String
+}
+
+// Announcement Model: School or course-wide announcements
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+
+// Role Enum: Defines possible user roles
 enum Role {
-  STUDENT
-  FACULTY
-  ADMIN
+  STUDENT    // Regular student
+  FACULTY    // Teacher/instructor
+  ADMIN      // School administrator
+}
+
+// DayOfWeek Enum: Days when classes can be scheduled
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+}
+
+// EventType Enum: Types of calendar events
+enum EventType {
+  SYSTEM      // For holidays, school events (admin only)
+  ACADEMIC    // For course-related events (faculty can create)
+  PERSONAL    // For personal events (all users can create)
 }
