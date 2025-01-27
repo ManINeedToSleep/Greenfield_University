@@ -3,11 +3,18 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+let counters = {
+  ADMIN: 1,
+  FACULTY: 1,
+  STUDENT: 1
+};
+
 // Helper function to generate roleId
 function generateRoleId(role, firstName, lastName) {
   const year = new Date().getFullYear();
   const rolePrefix = role.substring(0, 2).toUpperCase();
-  return `${rolePrefix}${firstName[0]}${lastName[0]}${year}`;
+  const counter = counters[role]++;
+  return `${rolePrefix}${firstName[0]}${lastName[0]}${year}${counter.toString().padStart(3, '0')}`;
 }
 
 async function main() {
@@ -18,10 +25,10 @@ async function main() {
     prisma.assignment.deleteMany({}),
     prisma.announcement.deleteMany({}),
     prisma.event.deleteMany({}),
-    prisma.calendar.deleteMany({}),
     prisma.schedule.deleteMany({}),
     prisma.course.deleteMany({}),
-    prisma.user.deleteMany({}),
+    prisma.user.deleteMany({}),      // Delete users before calendars
+    prisma.calendar.deleteMany({}),   // Delete calendars last
   ]);
 
   // Create users (admin, faculty, students)
