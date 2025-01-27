@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
+import { getRedirectPath } from '@/lib/routes'
 
 /**
  * Configuration constants for authentication
@@ -45,15 +46,10 @@ export async function POST(request: Request) {
     // Find user and include role-specific relations
     const user = await prisma.user.findUnique({
       where: { email },
-      include: role === 'STUDENT'
-        ? {
-            enrolledCourses: true,  // Match schema relation name
-          }
-        : role === 'FACULTY'
-        ? {
-            teachingCourses: true,  // Match schema relation name
-          }
-        : undefined,
+      include: {
+        courses: role === 'STUDENT',      // @relation("Enrollment")
+        teaching: role === 'FACULTY',      // @relation("Teaching")
+      },
     })
 
     // Security checks
@@ -103,10 +99,11 @@ export async function POST(request: Request) {
       ...userData
     } = user
 
-    // Create response with cookie
+    // Create response with cookie and redirect path
     const response = NextResponse.json({
       message: 'Login successful',
       user: userData,
+      redirectTo: getRedirectPath(role as 'ADMIN' | 'FACULTY' | 'STUDENT')
     });
 
     response.cookies.set({

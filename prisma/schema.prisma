@@ -23,46 +23,46 @@ datasource db {
 // Example: ADJD2024 for Admin John Doe created in 2024
 model User {
   id        String   @id @default(cuid())
-  roleId    String   @unique 
+  roleId    String   @unique
   email     String   @unique
   password  String
   role      Role     @default(STUDENT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Basic user information
+  // Common fields
   firstName String
   lastName  String
   isActive  Boolean  @default(true)
 
-  // Relationships
-  enrolledCourses Course[]    @relation("Enrollment")    // Courses student is enrolled in
-  teachingCourses Course[]    @relation("Teaching")      // Courses faculty is teaching
-  submissions     Submission[]                           // Student's assignment submissions
-  announcements   Announcement[]                         // Announcements created by faculty
-  grades          Grade[]     @relation("GradedBy")      // Grades given by faculty
-  receivedGrades  Grade[]     @relation("GradedFor")     // Grades received by student
-  calendar        Calendar    @relation(fields: [calendarId], references: [id])
-  calendarId      String      @unique
-  events          Event[]                                // Events created by the user
+  // Relations
+  courses    Course[]    @relation("Enrollment")
+  teaching   Course[]    @relation("Teaching")
+  submissions     Submission[]
+  announcements   Announcement[]
+  grades          Grade[]     @relation("GradedBy")
+  receivedGrades  Grade[]     @relation("GradedFor")
+  calendar   Calendar    @relation(fields: [calendarId], references: [id])
+  calendarId String      @unique
+  events          Event[]
 }
 
 // Course Model: Represents a class or subject
 model Course {
   id          String   @id @default(cuid())
-  code        String   @unique                          // Unique course code (e.g., "MATH101")
-  name        String                                    // Course name
+  code        String   @unique
+  name        String
   description String?
-  schedule    Schedule[]                               // Weekly schedule for the course
+  schedule    Schedule[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relationships
-  students      User[]        @relation("Enrollment")   // Enrolled students
-  instructor    User          @relation("Teaching", fields: [instructorId], references: [id])
-  instructorId  String
-  assignments   Assignment[]                            // Course assignments
-  announcements Announcement[]                          // Course announcements
+  // Relations
+  students    User[]   @relation("Enrollment")
+  instructor  User     @relation("Teaching", fields: [instructorId], references: [id])
+  instructorId String
+  assignments   Assignment[]
+  announcements Announcement[]
 }
 
 // Schedule Model: Handles course timing and room allocation

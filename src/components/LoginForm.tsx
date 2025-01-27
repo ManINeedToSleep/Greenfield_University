@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getRedirectPath } from "@/lib/routes";
 
 interface LoginFormProps {
-  role: 'student' | 'faculty' | 'admin';
+  role: 'STUDENT' | 'FACULTY' | 'ADMIN';
 }
 
 export default function LoginForm({ role }: LoginFormProps) {
@@ -40,8 +41,9 @@ export default function LoginForm({ role }: LoginFormProps) {
         throw new Error(data.error || 'Login failed');
       }
 
-      // Redirect based on role
-      router.push(`/dashboard/${role}`);
+      // Redirect to appropriate dashboard
+      const redirectPath = getRedirectPath(role.toUpperCase() as 'ADMIN' | 'FACULTY' | 'STUDENT');
+      router.push(redirectPath);
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');

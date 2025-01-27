@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { DASHBOARD_ROUTES } from "@/lib/routes";
 
 export default function RoleSelection() {
   const router = useRouter();
@@ -12,24 +13,27 @@ export default function RoleSelection() {
       title: "Student",
       description: "Access your classes, grades, schedule, and learning resources.",
       icon: "/images/icons/student-logo.png",
-      path: "student"
+      path: "student/login",
+      redirectTo: DASHBOARD_ROUTES.STUDENT
     },
     {
       title: "Faculty",
       description: "Manage your courses, grades, and communicate with students.",
       icon: "/images/icons/teacher-logo.png",
-      path: "faculty"
+      path: "faculty/login",
+      redirectTo: DASHBOARD_ROUTES.FACULTY
     },
     {
       title: "Admin",
       description: "Oversee university operations and manage system settings.",
       icon: "/images/icons/admin-logo.png",
-      path: "admin"
+      path: "admin/login",
+      redirectTo: DASHBOARD_ROUTES.ADMIN
     }
   ];
 
   const handleRoleSelection = (path: string) => {
-    router.push(`/portal/${path}/login`);
+    router.push(`/portal/${path}`);
   };
 
   return (
