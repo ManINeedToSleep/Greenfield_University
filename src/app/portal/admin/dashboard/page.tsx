@@ -4,12 +4,22 @@ import React, { useState } from "react";
 import { FaUsers, FaFileAlt } from "react-icons/fa";
 import DashboardHeader from "@/components/DashboardHeader";
 import {FaGraduationCap, FaChalkboardTeacher, FaCalendarAlt, FaChartLine, FaExclamationTriangle } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { IconType } from "react-icons";
 
 interface SystemMetric {
   label: string;
   value: string | number;
   change: number;
   trend: 'up' | 'down';
+}
+
+interface QuickAction {
+  id: number;
+  label: string;
+  icon: IconType;
+  count: number;
+  href?: string;
 }
 
 export default function AdminDashboard() {
@@ -26,11 +36,19 @@ export default function AdminDashboard() {
     { id: 3, type: 'info', message: "New faculty onboarding pending approval", time: "15 mins ago" },
   ]);
 
-  const [quickActions] = useState([
-    { id: 1, label: "Approve New Users", icon: FaUsers, count: 5 },
+  const [quickActions] = useState<QuickAction[]>([
+    { 
+      id: 1, 
+      label: "Manage Users", 
+      icon: FaUsers, 
+      count: 5,
+      href: "/portal/admin/user-management"
+    },
     { id: 2, label: "Pending Reports", icon: FaFileAlt, count: 3 },
     { id: 3, label: "System Alerts", icon: FaExclamationTriangle, count: 2 },
   ]);
+
+  const router = useRouter();
 
   return (
     <div className="bg-emerald-50 min-h-screen">
@@ -49,6 +67,7 @@ export default function AdminDashboard() {
               {quickActions.map((action) => (
                 <button
                   key={action.id}
+                  onClick={() => action.href && router.push(action.href)}
                   className="flex items-center px-4 py-2 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
                 >
                   <action.icon className="text-emerald-600 mr-2" />

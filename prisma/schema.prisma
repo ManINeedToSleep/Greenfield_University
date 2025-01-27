@@ -23,10 +23,10 @@ datasource db {
 // Example: ADJD2024 for Admin John Doe created in 2024
 model User {
   id        String   @id @default(cuid())
-  roleId    String   @unique
   email     String   @unique
   password  String
   role      Role     @default(STUDENT)
+  roleId    String   @unique @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -42,8 +42,8 @@ model User {
   announcements   Announcement[]
   grades          Grade[]     @relation("GradedBy")
   receivedGrades  Grade[]     @relation("GradedFor")
-  calendar   Calendar    @relation(fields: [calendarId], references: [id])
-  calendarId String      @unique
+  calendar   Calendar?   @relation(fields: [calendarId], references: [id])
+  calendarId String?     @unique
   events          Event[]
 }
 
