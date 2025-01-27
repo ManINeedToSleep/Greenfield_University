@@ -2,12 +2,28 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
+/**
+ * Single User Operations ([id] routes)
+ * This file handles operations for individual users, identified by their ID.
+ * Route: /api/users/[id]
+ * 
+ * Available Methods:
+ * - GET: Fetch a single user
+ * - DELETE: Remove a single user
+ */
+
+/**
+ * GET /api/users/[id]
+ * Retrieves a specific user by their ID
+ * Returns: User object with sensitive fields excluded
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const id = (await params).id;
+    // Select specific fields to return, excluding sensitive data like password
     const user = await prisma.user.findUnique({
       where: { id },
       select: {
@@ -32,7 +48,20 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(user);
+    // Transform the response to show role-specific ID
+    const transformedUser = {
+      ...user,
+      // Replace the 'id' field with the appropriate role-specific ID
+      id: user.role === 'ADMIN' ? user.adminId : 
+          user.role === 'FACULTY' ? user.facultyId : 
+          user.studentId,
+      // Remove the role-specific ID fields since we're using one as the main ID
+      studentId: undefined,
+      facultyId: undefined,
+      adminId: undefined
+    };
+
+    return NextResponse.json(transformedUser);
   } catch (error) {
     console.error('Failed to fetch user:', error);
     return NextResponse.json(
@@ -42,6 +71,11 @@ export async function GET(
   }
 }
 
+/**
+ * DELETE /api/users/[id]
+ * Removes a specific user from the database
+ * Returns: Success message or error
+ */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

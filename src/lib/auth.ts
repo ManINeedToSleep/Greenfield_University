@@ -32,18 +32,43 @@ export const config: NextAuthOptions = {
     CredentialsProvider({
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        role: { label: "Role", type: "text" },
+        roleId: { label: "Role ID", type: "text" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.email || !credentials?.password || !credentials?.role || !credentials?.roleId) {
           return null;
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
+          where: { 
+            email: credentials.email,
+          }
         });
 
-        if (!user || !(await compare(credentials.password, user.password))) {
+        if (!user) {
+          return null;
+        }
+
+        // Verify password
+        const isValidPassword = await compare(credentials.password, user.password);
+        if (!isValidPassword) {
+          return null;
+        }
+
+        // Verify role
+        if (user.role !== credentials.role) {
+          return null;
+        }
+
+        // Verify role-specific ID
+        const roleIdMatch = 
+          (credentials.role === 'ADMIN' && user.adminId === credentials.roleId) ||
+          (credentials.role === 'FACULTY' && user.facultyId === credentials.roleId) ||
+          (credentials.role === 'STUDENT' && user.studentId === credentials.roleId);
+
+        if (!roleIdMatch) {
           return null;
         }
 

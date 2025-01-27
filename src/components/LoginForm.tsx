@@ -33,18 +33,18 @@ export default function LoginForm({ role, additionalFields }: LoginFormProps) {
       const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
-        role: role,
+        role: role.toUpperCase(), // Ensure role is uppercase to match enum
         roleId: roleIdField?.value || '',
         redirect: false,
       });
 
       if (result?.error) {
-        setFormError("Invalid credentials");
+        setFormError("Invalid credentials. Please check your email, password, and ID.");
         return;
       }
 
       // Redirect to role-specific dashboard
-      router.push(`/portal/${role}/dashboard`);
+      router.push(`/portal/${role.toLowerCase()}/dashboard`);
       router.refresh();
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Login failed');
