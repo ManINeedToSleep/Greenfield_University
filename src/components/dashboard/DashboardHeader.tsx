@@ -15,7 +15,7 @@ export default function DashboardHeader({ title, role, userName, currentPath }: 
         return [
           { href: "/portal/admin/dashboard", label: "Dashboard" },
           { href: "/portal/admin/user-management", label: "User Management" },
-          { href: "/portal/admin/courses", label: "Course Management" },
+          { href: "/portal/admin/course-management", label: "Course Management" },
           { href: "/portal/admin/report-systems", label: "Report Systems" }
         ];
       case 'FACULTY':

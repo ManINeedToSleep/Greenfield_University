@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { FaUsers, FaFileAlt } from "react-icons/fa";
-import DashboardHeader from "@/components/DashboardHeader";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import {FaGraduationCap, FaChalkboardTeacher, FaCalendarAlt, FaChartLine, FaExclamationTriangle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { IconType } from "react-icons";

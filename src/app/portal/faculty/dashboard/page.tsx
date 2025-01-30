@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FaChalkboardTeacher, FaClipboardList, FaUserGraduate, FaCalendarAlt } from "react-icons/fa";
-import DashboardHeader from "@/components/DashboardHeader";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatCard from "@/components/dashboard/StatCard";
 import ActivityFeed from "@/components/dashboard/ActivityFeed";
 

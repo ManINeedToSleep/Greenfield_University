@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash, FaEdit, FaTrash, FaUserPlus } from "react-icons/fa";
-import DashboardHeader from "@/components/DashboardHeader";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import UserFormModal from '@/components/modals/UserFormModal';
 
 // Add the missing interface
