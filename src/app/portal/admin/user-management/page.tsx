@@ -105,7 +105,7 @@ export default function UserManagement() {
     if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch(`/api/users?id=${userId}`, {
         method: 'DELETE',
       });
 
@@ -145,12 +145,12 @@ export default function UserManagement() {
     if (!selectedUser) return;
 
     try {
-      const response = await fetch(`/api/users/${selectedUser.id}`, {
+      const response = await fetch('/api/users', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({ ...userData, id: selectedUser.id }),
       });
 
       if (!response.ok) throw new Error('Failed to update user');
@@ -185,7 +185,7 @@ export default function UserManagement() {
               <input
                 type="text"
                 placeholder="Search users..."
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-slate-800 placeholder-slate-400"
                 value={filters.search}
                 onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
               />
@@ -193,25 +193,25 @@ export default function UserManagement() {
 
             {/* Role Filter */}
             <select
-              className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-slate-800"
               value={filters.role}
               onChange={(e) => setFilters(prev => ({ ...prev, role: e.target.value }))}
             >
-              <option value="">All Roles</option>
-              <option value="STUDENT">Student</option>
-              <option value="FACULTY">Faculty</option>
-              <option value="ADMIN">Admin</option>
+              <option value="" className="text-slate-800">All Roles</option>
+              <option value="STUDENT" className="text-slate-800">Student</option>
+              <option value="FACULTY" className="text-slate-800">Faculty</option>
+              <option value="ADMIN" className="text-slate-800">Admin</option>
             </select>
 
             {/* Status Filter */}
             <select
-              className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-slate-800"
               value={filters.status}
               onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
             >
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="" className="text-slate-800">All Status</option>
+              <option value="active" className="text-slate-800">Active</option>
+              <option value="inactive" className="text-slate-800">Inactive</option>
             </select>
 
             {/* Create User Button */}
@@ -232,49 +232,41 @@ export default function UserManagement() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-emerald-600">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Password</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Access</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Password</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Role</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Role ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Last Access</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredUsers.map((user) => (
                     <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-800">
                         {user.firstName} {user.lastName}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-800">{user.email}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono">
+                          <span className="font-mono text-slate-800 min-w-[80px]">
                             {showPasswordMap[user.id] ? user.password : '••••••••'}
                           </span>
                           <button
                             onClick={() => togglePasswordVisibility(user.id)}
-                            className="text-gray-500 hover:text-gray-700"
+                            className="text-slate-600 hover:text-slate-800"
                           >
                             {showPasswordMap[user.id] ? <FaEyeSlash /> : <FaEye />}
                           </button>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          user.role === 'ADMIN' ? 'bg-red-100 text-red-800' :
-                          user.role === 'FACULTY' ? 'bg-blue-100 text-blue-800' :
-                          'bg-green-100 text-green-800'
-                        }`}>
-                          {user.role}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">{user.roleId}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-800">{user.role}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-800">{user.roleId}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-800">
                         {user.lastAccess || 'Never'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

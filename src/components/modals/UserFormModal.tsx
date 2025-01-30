@@ -57,67 +57,67 @@ export default function UserFormModal({
           <FaTimes />
         </button>
 
-        <h2 className="text-2xl font-bold text-emerald-900 mb-6">
+        <h2 className="text-2xl font-bold text-slate-800 mb-6">
           {mode === 'create' ? 'Create New User' : 'Edit User'}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">First Name</label>
+              <label className="block text-sm font-medium text-slate-800">First Name</label>
               <input
                 type="text"
                 required
                 value={formData.firstName}
                 onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500 text-slate-800"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Last Name</label>
+              <label className="block text-sm font-medium text-slate-800">Last Name</label>
               <input
                 type="text"
                 required
                 value={formData.lastName}
                 onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500 text-slate-800"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-slate-800">Email</label>
             <input
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500 text-slate-800"
             />
           </div>
 
           {mode === 'create' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <label className="block text-sm font-medium text-slate-800">Password</label>
               <input
                 type="password"
                 required={mode === 'create'}
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500 text-slate-800"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Role</label>
+            <label className="block text-sm font-medium text-slate-800">Role</label>
             <select
               value={formData.role}
               onChange={(e) => setFormData(prev => ({ 
                 ...prev, 
                 role: e.target.value as 'ADMIN' | 'FACULTY' | 'STUDENT' 
               }))}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500 text-slate-800"
             >
               <option value="STUDENT">Student</option>
               <option value="FACULTY">Faculty</option>
@@ -133,7 +133,7 @@ export default function UserFormModal({
               onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
               className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
             />
-            <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+            <label htmlFor="isActive" className="ml-2 block text-sm text-slate-800">
               Active Account
             </label>
           </div>
