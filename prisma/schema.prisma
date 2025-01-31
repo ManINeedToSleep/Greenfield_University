@@ -26,14 +26,12 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(STUDENT)
-  roleId    String   @unique @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Common fields
+  roleId    String   @unique
   firstName String
   lastName  String
   isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   courses    Course[]    @relation("Enrollment")
@@ -172,9 +170,9 @@ model Announcement {
 
 // Role Enum: Defines possible user roles
 enum Role {
-  STUDENT    // Regular student
-  FACULTY    // Teacher/instructor
-  ADMIN      // School administrator
+  STUDENT
+  FACULTY
+  ADMIN
 }
 
 // DayOfWeek Enum: Days when classes can be scheduled
@@ -243,24 +241,24 @@ enum ApplicationType {
 }
 
 model Application {
-  id              String            @id @default(cuid())
-  type            ApplicationType
-  status          ApplicationStatus @default(DRAFT)
-  submittedAt     DateTime?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id            String            @id @default(cuid())
+  type          ApplicationType
+  status        ApplicationStatus @default(DRAFT)
+  submittedAt   DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   // Personal Information
-  firstName       String
-  lastName        String
-  email           String
-  phoneNumber     String
-  dateOfBirth     DateTime
-  address         String
-  city            String
-  state           String?
-  country         String
-  postalCode      String
+  firstName     String
+  lastName      String
+  email         String
+  phoneNumber   String
+  dateOfBirth   DateTime
+  address       String
+  city          String
+  state         String?
+  country       String
+  postalCode    String
 
   // Academic Information
   previousSchools Json[]
