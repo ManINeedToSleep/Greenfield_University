@@ -243,55 +243,46 @@ enum ApplicationType {
 }
 
 model Application {
-  id            String            @id @default(cuid())
-  type          ApplicationType
-  status        ApplicationStatus @default(DRAFT)
-  submittedAt   DateTime?
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  id              String            @id @default(cuid())
+  type            ApplicationType
+  status          ApplicationStatus @default(DRAFT)
+  submittedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   // Personal Information
-  firstName     String
-  lastName      String
-  email         String
-  phoneNumber   String
-  dateOfBirth   DateTime
-  address       String
-  city          String
-  state         String?
-  country       String
-  postalCode    String
+  firstName       String
+  lastName        String
+  email           String
+  phoneNumber     String
+  dateOfBirth     DateTime
+  address         String
+  city            String
+  state           String?
+  country         String
+  postalCode      String
 
   // Academic Information
-  previousSchools Json[]          // Array of schools attended
-  gpa           Float?
-  satScore      Int?
-  actScore      Int?
-  toeflScore    Int?             // For international students
-  ieltsScore    Float?           // For international students
-
-  // Program Information
-  intendedMajor String
-  startTerm     String           // e.g., "Fall 2024"
-  
-  // Documents
-  documents     ApplicationDocument[]
+  previousSchools Json[]
+  gpa             Float?
+  satScore        Int?
+  actScore        Int?
+  toeflScore      Int?
+  ieltsScore      Float?
+  intendedMajor   String
+  startTerm       String
 
   // Additional Information
-  extraCurricular Json?          // Array of activities
-  awards        Json?            // Array of awards/honors
-  essay         String?          // Personal statement
-  additionalInfo String?         // Any additional information
-
-  // References
-  references    Reference[]
+  essay           String?
+  documents       ApplicationDocument[]
+  references      Reference[]
 }
 
 model ApplicationDocument {
   id            String      @id @default(cuid())
   application   Application @relation(fields: [applicationId], references: [id])
   applicationId String
-  type          String      // transcript, recommendation, passport, etc.
+  type          String      // e.g., "transcript", "recommendation", "identification"
   name          String
   url           String
   uploadedAt    DateTime    @default(now())
@@ -306,6 +297,6 @@ model Reference {
   phone         String?
   institution   String
   title         String
-  letter        String?     // URL to uploaded letter
+  letter        String?
   submittedAt   DateTime?
 }
