@@ -45,6 +45,7 @@ model User {
   calendar   Calendar?   @relation(fields: [calendarId], references: [id])
   calendarId String?     @unique
   events          Event[]
+  reports    Report[]
 }
 
 // Course Model: Represents a class or subject
@@ -190,4 +191,37 @@ enum EventType {
   SYSTEM      // For holidays, school events (admin only)
   ACADEMIC    // For course-related events (faculty can create)
   PERSONAL    // For personal events (all users can create)
+}
+
+// Report Model: Handles system analytics and reporting
+// Reports can be generated for different aspects of the system (enrollment, performance, etc.)
+// Each report is associated with a specific time period and contains JSON data
+model Report {
+  id          String      @id @default(cuid())
+  title       String      // Human-readable report title
+  type        ReportType  // Type of report (see ReportType enum)
+  data        Json        // Report data in JSON format
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  createdBy   User        @relation(fields: [userId], references: [id])
+  userId      String      // ID of user who generated the report
+  status      ReportStatus @default(GENERATED)
+  period      String      // Time period (e.g., "2024-Q1", "2024-01")
+}
+
+// Available report types
+enum ReportType {
+  ENROLLMENT_SUMMARY    // Student enrollment statistics
+  ACADEMIC_PERFORMANCE  // Grade distributions and performance metrics
+  ATTENDANCE_SUMMARY   // Attendance patterns and statistics
+  FACULTY_WORKLOAD     // Teaching load and faculty metrics
+  COURSE_ANALYTICS     // Course-specific statistics
+  SYSTEM_USAGE         // Platform usage metrics
+}
+
+// Report generation status
+enum ReportStatus {
+  GENERATING  // Report is being generated
+  GENERATED   // Report is complete and available
+  FAILED      // Report generation failed
 }
