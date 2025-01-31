@@ -22,10 +22,10 @@ export default function ApplyPage() {
               Explore our undergraduate programs and begin your academic journey.
             </p>
             <Link
-              href="/apply/undergraduate"
+              href="/apply/application"
               className="text-emerald-600 font-bold hover:text-emerald-700 transition-colors"
             >
-              Learn More →
+              Begin Application →
             </Link>
           </div>
           <div className="bg-white p-6 shadow-md rounded-xl hover:shadow-lg transition-shadow duration-300 border-l-4 border-emerald-600">
@@ -34,10 +34,10 @@ export default function ApplyPage() {
               Continue your education by transferring to Greenfield University.
             </p>
             <Link
-              href="/apply/transfer"
+              href="/apply/application"
               className="text-emerald-600 font-bold hover:text-emerald-700 transition-colors"
             >
-              Learn More →
+              Begin Application →
             </Link>
           </div>
           <div className="bg-white p-6 shadow-md rounded-xl hover:shadow-lg transition-shadow duration-300 border-l-4 border-emerald-600">
@@ -46,10 +46,10 @@ export default function ApplyPage() {
               Advance your career with our master&apos;s and doctoral programs.
             </p>
             <Link
-              href="/apply/graduate"
+              href="/apply/application"
               className="text-emerald-600 font-bold hover:text-emerald-700 transition-colors"
             >
-              Learn More →
+              Begin Application →
             </Link>
           </div>
           <div className="bg-white p-6 shadow-md rounded-xl hover:shadow-lg transition-shadow duration-300 border-l-4 border-emerald-600">
@@ -58,10 +58,10 @@ export default function ApplyPage() {
               Join our diverse community and bring your global perspective to Greenfield University.
             </p>
             <Link
-              href="/apply/international"
+              href="/apply/application"
               className="text-emerald-600 font-bold hover:text-emerald-700 transition-colors"
             >
-              Learn More →
+              Begin Application →
             </Link>
           </div>
         </div>

@@ -27,7 +27,7 @@ export default function UndergraduateAdmissions() {
       altText: "Application Portal",
       title: "Apply Now",
       description: "Ready to apply? Start your application process here.",
-      linkHref: "/apply/undergraduate",
+      linkHref: "/apply/application",
       linkText: "Begin Application"
     }
   ];

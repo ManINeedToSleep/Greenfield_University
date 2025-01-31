@@ -27,7 +27,7 @@ export default function GraduateAdmissions() {
       altText: "Application Portal",
       title: "Apply Now",
       description: "Ready to start your graduate journey? Begin your application here.",
-      linkHref: "/apply/graduate",
+      linkHref: "/apply/application",
       linkText: "Begin Application"
     }
   ];

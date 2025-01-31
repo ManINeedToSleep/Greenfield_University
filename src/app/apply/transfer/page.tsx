@@ -27,7 +27,7 @@ export default function TransferAdmissions() {
       altText: "Application Portal",
       title: "Apply Now",
       description: "Ready to transfer? Start your application process here.",
-      linkHref: "/apply/transfer",
+      linkHref: "/apply/application",
       linkText: "Begin Application"
     }
   ];

@@ -27,7 +27,7 @@ export default function InternationalAdmissions() {
       altText: "Application Portal",
       title: "Apply Now",
       description: "Ready to join our global community? Start your application here.",
-      linkHref: "/apply/international",
+      linkHref: "/apply/application",
       linkText: "Begin Application"
     }
   ];

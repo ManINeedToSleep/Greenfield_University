@@ -242,6 +242,140 @@ async function main() {
     });
   }
 
+  // Create sample applications
+  const sampleApplications = [
+    {
+      // Undergraduate Application
+      type: 'UNDERGRADUATE',
+      status: 'SUBMITTED',
+      submittedAt: new Date('2024-01-15'),
+      firstName: 'John',
+      lastName: 'Smith',
+      email: 'john.smith@email.com',
+      phoneNumber: '123-456-7890',
+      dateOfBirth: new Date('2006-05-15'),
+      address: '123 Main St',
+      city: 'Springfield',
+      state: 'IL',
+      country: 'USA',
+      postalCode: '62701',
+      previousSchools: [
+        {
+          name: 'Springfield High School',
+          location: 'Springfield, IL',
+          startDate: '2020-09-01',
+          endDate: '2024-05-30'
+        }
+      ],
+      gpa: 3.8,
+      satScore: 1400,
+      actScore: 30,
+      intendedMajor: 'Computer Science',
+      startTerm: 'Fall 2024',
+      essay: 'I am passionate about technology and its impact on society...',
+    },
+    {
+      // Graduate Application
+      type: 'GRADUATE',
+      status: 'UNDER_REVIEW',
+      submittedAt: new Date('2024-01-20'),
+      firstName: 'Emily',
+      lastName: 'Johnson',
+      email: 'emily.johnson@email.com',
+      phoneNumber: '234-567-8901',
+      dateOfBirth: new Date('1999-08-22'),
+      address: '456 Oak Ave',
+      city: 'Boston',
+      state: 'MA',
+      country: 'USA',
+      postalCode: '02108',
+      previousSchools: [
+        {
+          name: 'Boston University',
+          location: 'Boston, MA',
+          startDate: '2019-09-01',
+          endDate: '2023-05-30',
+          degree: 'Bachelor of Science in Biology'
+        }
+      ],
+      gpa: 3.9,
+      intendedMajor: 'Biotechnology',
+      startTerm: 'Fall 2024',
+      essay: 'My research experience in molecular biology has prepared me...',
+    },
+    {
+      // Transfer Application
+      type: 'TRANSFER',
+      status: 'SUBMITTED',
+      submittedAt: new Date('2024-01-25'),
+      firstName: 'Michael',
+      lastName: 'Chen',
+      email: 'michael.chen@email.com',
+      phoneNumber: '345-678-9012',
+      dateOfBirth: new Date('2003-03-10'),
+      address: '789 Pine St',
+      city: 'San Jose',
+      state: 'CA',
+      country: 'USA',
+      postalCode: '95110',
+      previousSchools: [
+        {
+          name: 'San Jose City College',
+          location: 'San Jose, CA',
+          startDate: '2022-09-01',
+          endDate: '2024-05-30',
+          degree: 'Associate in Computer Science'
+        }
+      ],
+      gpa: 3.7,
+      intendedMajor: 'Software Engineering',
+      startTerm: 'Spring 2025',
+      essay: 'My experience at community college has strengthened my desire...',
+    },
+    {
+      // International Application
+      type: 'INTERNATIONAL',
+      status: 'SUBMITTED',
+      submittedAt: new Date('2024-01-30'),
+      firstName: 'Sofia',
+      lastName: 'Martinez',
+      email: 'sofia.martinez@email.com',
+      phoneNumber: '+34 612 345 678',
+      dateOfBirth: new Date('2005-11-28'),
+      address: 'Calle Mayor 123',
+      city: 'Madrid',
+      state: null,
+      country: 'Spain',
+      postalCode: '28013',
+      previousSchools: [
+        {
+          name: 'Instituto San Isidro',
+          location: 'Madrid, Spain',
+          startDate: '2020-09-01',
+          endDate: '2024-06-30'
+        }
+      ],
+      gpa: 9.2, // On 10-point scale
+      toeflScore: 105,
+      ieltsScore: 7.5,
+      intendedMajor: 'International Business',
+      startTerm: 'Fall 2024',
+      essay: 'My international perspective and multicultural background...',
+    }
+  ];
+
+  // Create the applications in the database
+  for (const applicationData of sampleApplications) {
+    const { previousSchools, ...appData } = applicationData;
+    
+    await prisma.application.create({
+      data: {
+        ...appData,
+        previousSchools: previousSchools, // JSON field
+      },
+    });
+  }
+
   console.log('Seed data created successfully!');
   console.log('\nTest Account Credentials:');
   console.log('-------------------------');
@@ -251,6 +385,10 @@ async function main() {
   console.log('\nStudent Emails:');
   studentAccounts.forEach(s => console.log(`- ${s.email} (${s.year} year)`));
   console.log('\nPassword for all accounts: password123');
+  console.log('\nSample Applications:');
+  console.log('-------------------');
+  sampleApplications.forEach(app => 
+    console.log(`- ${app.firstName} ${app.lastName} (${app.type})`));
 }
 
 main()

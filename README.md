@@ -4,6 +4,16 @@ A comprehensive university management system built with Next.js, Prisma, and Pos
 
 ## 🎓 Features
 
+### Application Management
+- Multi-step application process for different student types:
+  - Undergraduate
+  - Graduate
+  - Transfer
+  - International
+- Document upload and management
+- Application status tracking
+- Automated email notifications
+
 ### User Management
 - Role-based authentication (Student, Faculty, Admin)
 - Secure login system with JWT
@@ -20,61 +30,97 @@ A comprehensive university management system built with Next.js, Prisma, and Pos
 - System-wide announcements
 - Performance monitoring
 - Activity tracking
-
-### Public Pages
-- University information
-- Admission details
-- Campus tour scheduling
-- Open house information
-- Contact forms
+- Report generation system
 
 ## 🛠 Tech Stack
 
-- **Frontend**: Next.js 14, TailwindCSS, Framer Motion
-- **Backend**: Next.js API Routes
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: JWT
-- **Hosting**: Vercel
+- **Frontend**: 
+  - Next.js 14 with App Router
+  - TailwindCSS for styling
+  - Framer Motion for animations
+  - React Hook Form for form management
 
-## 📦 Installation
+- **Backend**: 
+  - Next.js API Routes
+  - Prisma ORM
+  - PostgreSQL (Neon)
+  - JWT Authentication
+
+- **Development**:
+  - TypeScript
+  - ESLint
+  - Prettier
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   │   ├── applications/  # Application management
+│   │   ├── auth/         # Authentication
+│   │   ├── courses/      # Course management
+│   │   └── users/        # User management
+│   ├── apply/            # Application pages
+│   │   ├── undergraduate/
+│   │   ├── graduate/
+│   │   ├── transfer/
+│   │   └── international/
+│   └── portal/           # Protected routes
+│       ├── admin/        # Admin dashboard
+│       ├── faculty/      # Faculty portal
+│       └── student/      # Student portal
+├── components/           # Reusable components
+│   ├── forms/           # Form components
+│   ├── dashboard/       # Dashboard components
+│   └── ui/             # UI components
+├── lib/                 # Utility functions
+│   ├── prisma.ts       # Prisma client
+│   └── auth.ts         # Authentication utilities
+└── types/              # TypeScript types
+prisma/
+├── schema.prisma       # Database schema
+├── migrations/        # Database migrations
+└── seed.mjs          # Seed script
+```
+
+## 🚀 Getting Started
 
 1. Clone the repository:
-
-bash
-git clone [[repository-url](https://github.com/ManINeedToSleep/Greenfield_University)]
+```bash
+git clone https://github.com/your-username/greenfield-university.git
 cd greenfield-university
+```
 
 2. Install dependencies:
-
-bash
+```bash
 npm install
+```
 
 3. Set up environment variables:
-Create a `.env` file in the root directory with the following:
-
+Create a `.env` file in the root directory:
+```env
 DATABASE_URL="your-postgresql-connection-string"
 JWT_SECRET="your-jwt-secret"
+```
 
 4. Set up the database:
-
-bash
+```bash
 npx prisma generate
 npx prisma db push
-
-5. Seed the database:
-
-bash
 npm run seed
+```
 
-6. Run the development server:
-
-bash
+5. Run the development server:
+```bash
 npm run dev
+```
 
-## 🔑 Test Accounts
+## 🔐 Authentication
 
-After seeding the database, you can use these test accounts:
+The system uses JWT-based authentication with HTTP-only cookies. Different user roles (ADMIN, FACULTY, STUDENT) have access to different parts of the application.
 
+### Test Accounts
 ```
 Admin:
 - Email: admin@school.edu
@@ -84,49 +130,14 @@ Faculty:
 - Email: faculty@school.edu
 - Password: password123
 
-Students:
-- Email: student1@school.edu
-- Password: password123
-- Email: student2@school.edu
+Student:
+- Email: student@school.edu
 - Password: password123
 ```
-
-## 📁 Project Structure
-
-```
-src/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   ├── portal/            # Protected routes
-│   └── ...                # Public pages
-├── components/            # Reusable components
-├── lib/                   # Utility functions
-└── styles/               # Global styles
-prisma/
-├── schema.prisma         # Database schema
-└── seed.mjs             # Seed script
-public/                  # Static assets
-```
-
-## 🔐 Security
-
-- HTTP-only cookies for JWT storage
-- Password hashing with bcrypt
-- Role-based access control
-- Protected API routes
-
-## 🚀 Deployment
-
-This project is configured for deployment on Vercel:
-
-1. Push your code to GitHub
-2. Import your repository on Vercel
-3. Configure environment variables in Vercel dashboard
-4. Deploy!
 
 ## 📝 License
 
-MIT License - see [LICENSE](LICENSE) for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👥 Contributing
 
